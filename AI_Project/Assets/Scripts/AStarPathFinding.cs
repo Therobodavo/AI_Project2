@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class AStarPathFinding : MonoBehaviour
 {
     public GameObject targetPrefab;
+    public GameObject errorPrefab;
     public Text aStarAIState;
 
     private List<Node> openList = new List<Node>();
@@ -19,9 +21,12 @@ public class AStarPathFinding : MonoBehaviour
 
     private Vector3 targetLocation;
 
+
     void Start()
     {
         aStarAIState.text = "AStar AI Current State: Stop";
+        targetPrefab.SetActive(false);
+        errorPrefab.SetActive(false);
     }
 
     
@@ -49,6 +54,28 @@ public class AStarPathFinding : MonoBehaviour
                 }
             }
         }
+        if (Input.GetMouseButtonDown(1) && !EventSystem.current.IsPointerOverGameObject())
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                Vector3 point = hit.point;
+                //Debug.Log(point);
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Ground"))
+                {
+                    SetLocationAsTarget(point);
+                    aStarAIState.text = "AStar AI Current State: Moving";
+                }
+                else
+                {
+                    targetPrefab.SetActive(false);
+                    errorPrefab.SetActive(true);
+                    errorPrefab.transform.position = Input.mousePosition;
+                    Invoke("HideErrorPrefab", 0.5f);
+                }
+            }
+        }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Application.Quit();
@@ -56,7 +83,7 @@ public class AStarPathFinding : MonoBehaviour
         
     }
 
-    void PathFinding(Vector3 startPoint, Vector3 endPoint)
+    bool PathFinding(Vector3 startPoint, Vector3 endPoint)
     {
         int startX;
         int startY;
@@ -67,9 +94,15 @@ public class AStarPathFinding : MonoBehaviour
         startY = (int)GetClosestNode(startPoint).y;
         endX = (int)GetClosestNode(endPoint).x;
         endY = (int)GetClosestNode(endPoint).y;
-        if(nodes[startX, startY].isObstacle || nodes[endX, endY].isObstacle)
+        //Debug.Log(GetClosestNode(endPoint));
+        if (endX < 0 || endY < 0 || endX > MapScanner.instance.xNumber || endY > MapScanner.instance.yNumber) 
         {
             Debug.Log("Can't reach end.");
+            return false;
+        }else if(nodes[endX, endY].isObstacle)
+        {
+            Debug.Log("Can't reach end.");
+            return false;
         }
         
         Debug.DrawLine(new Vector3(nodes[startX, startY].position.x, nodes[startX, startY].position.y, nodes[startX, startY].position.z), new Vector3(nodes[startX, startY].position.x, nodes[startX, startY].position.y + 0.5f, nodes[startX, startY].position.z), Color.yellow, 30.0f);
@@ -78,6 +111,7 @@ public class AStarPathFinding : MonoBehaviour
         Node currentNode = null;
         openList.Clear();
         closeList.Clear();
+        path.Clear();
         openList.Add(nodes[startX, startY]);
 
         while (openList.Count > 0)
@@ -95,8 +129,29 @@ public class AStarPathFinding : MonoBehaviour
 
             if(currentNode.x == endX && currentNode.y == endY)
             {
+                if (openList.Count > 1)
+                {
+                    if (currentNode.parent != null)
+                    {
+                        if (IsInclude(currentNode.position.x, currentNode.parent.position.x, endPoint.x) || IsInclude(currentNode.position.z, currentNode.parent.position.z, endPoint.z))
+                        {
+                            currentNode = currentNode.parent;
+                        }
+                    }
+                }
+                if (openList.Count > 1)
+                {
+                    Node temp = FindStartPoint(currentNode);
+                    if(temp.parent != null)
+                    {
+                        if (IsInclude(temp.position.x, temp.parent.position.x, startPoint.x) || IsInclude(temp.position.z, temp.parent.position.z, startPoint.z))
+                        {
+                            temp.parent = null;
+                        }
+                    }
+                }
                 GeneratePath(currentNode);
-                return;
+                return true;
             }
             for(int i = -1; i <= 1; i++)
             {
@@ -130,9 +185,11 @@ public class AStarPathFinding : MonoBehaviour
             if(openList.Count == 0)
             {
                 Debug.Log("Can't reach end.");
+                return false;
             }
             openList.Sort();
         }
+        return true;
     }
 
     void GeneratePath(Node node)
@@ -169,22 +226,26 @@ public class AStarPathFinding : MonoBehaviour
 
     Vector2 GetClosestNode(Vector3 position)
     {
-        float minDis = Mathf.Sqrt(Mathf.Pow((position.x - nodes[0,0].position.x),2)+ Mathf.Pow((position.z - nodes[0, 0].position.z), 2));
-        int minX = 0;
-        int minY = 0;
-        for (int i = 0; i < MapScanner.instance.xNumber; i++)
+        float deltaWidth = (position.x - MapScanner.instance.startPoint.x) / MapScanner.instance.cellWidth;
+        float deltaLength = (position.z - MapScanner.instance.startPoint.z) / MapScanner.instance.cellLength;
+        int x, y;
+        if(deltaWidth - (int)deltaWidth < 0.5f)
         {
-            for (int j = 0; j < MapScanner.instance.yNumber; j++)
-            {
-                if(minDis > Mathf.Sqrt(Mathf.Pow((position.x - nodes[i, j].position.x), 2) + Mathf.Pow((position.z - nodes[i, j].position.z), 2)))
-                {
-                    minDis = Mathf.Sqrt(Mathf.Pow((position.x - nodes[i, j].position.x), 2) + Mathf.Pow((position.z - nodes[i, j].position.z), 2));
-                    minX = i;
-                    minY = j;
-                }
-            }
+            x = (int)deltaWidth - 1;
         }
-        return new Vector2(minX, minY);
+        else
+        {
+            x = (int)deltaWidth;
+        }
+        if (deltaLength - (int)deltaLength < 0.5f)
+        {
+            y = (int)deltaLength - 1;
+        }
+        else
+        {
+            y= (int)deltaLength;
+        }
+        return new Vector2(x, y);
     }
 
     void CopyNodes()
@@ -226,12 +287,71 @@ public class AStarPathFinding : MonoBehaviour
                 }
             }
         }
+        SetLocationAsTarget(randomPoint);
+    }
+
+    void SetLocationAsTarget(Vector3 location)
+    {
+        bool canReach;
         pathRecords.Clear();
         targetPointIndex = -1;
-        targetLocation = randomPoint;
-        targetPrefab.SetActive(true);
-        targetPrefab.transform.position = randomPoint + new Vector3(0, 3, 0);
-        
-        PathFinding(transform.position, randomPoint);
+        targetLocation = location;
+
+        canReach = PathFinding(transform.position, location);
+        if (canReach)
+        {
+            targetPrefab.SetActive(true);
+            targetPrefab.transform.position = location + new Vector3(0, 2, 0);
+        }
+        else
+        {
+            targetPrefab.SetActive(false);
+            errorPrefab.SetActive(true);
+            errorPrefab.transform.position = Input.mousePosition;
+            Invoke("HideErrorPrefab", 0.5f);
+        }
+    }
+
+    void HideErrorPrefab()
+    {
+        errorPrefab.SetActive(false);
+    }
+
+    bool IsInclude(float a, float b, float c)
+    {
+        float x, y;
+        if (a < b)
+        {
+            x = a;
+            y = b;
+        }
+        else
+        {
+            x = b;
+            y = a;
+        }
+        if (x < c && c < y)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    Node FindStartPoint(Node node)
+    {
+        Node temp = node;
+        if (temp.parent == null || temp.parent.parent == null) 
+        {
+            return temp;
+        }
+        while (temp.parent.parent != null)
+        {
+            temp = temp.parent;
+            
+        }
+        return temp;
     }
 }

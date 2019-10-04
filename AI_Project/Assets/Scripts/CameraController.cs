@@ -5,14 +5,34 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public float moveSpeed;
+    public GameObject helper;
+    public GameObject openHelper;
 
+    private bool isHelperOpen;
     void Start()
     {
-        
+        isHelperOpen = false;
+        openHelper.SetActive(true);
+        helper.SetActive(false);
     }
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            if (isHelperOpen)
+            {
+                isHelperOpen = false;
+                openHelper.SetActive(true);
+                helper.SetActive(false);
+            }
+            else
+            {
+                isHelperOpen = true;
+                openHelper.SetActive(false);
+                helper.SetActive(true);
+            }
+        }
         if (Input.mousePosition.y > Screen.height * 0.95f && Input.mousePosition.y <= Screen.height)
         {
             transform.position = new Vector3(transform.position.x - moveSpeed * Time.deltaTime, transform.position.y, transform.position.z - moveSpeed * Time.deltaTime);

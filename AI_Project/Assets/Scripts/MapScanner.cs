@@ -76,14 +76,14 @@ public class MapScanner : MonoBehaviour
                 {
                     grid[i, j].isObstacle = !CheckHeightTolerance(i, j);
                 }
-                //if (grid[i, j].isObstacle == false)
-                //{
-                //    Debug.DrawLine(new Vector3(grid[i, j].position.x, grid[i, j].position.y, grid[i, j].position.z), new Vector3(grid[i, j].position.x, grid[i, j].position.y + 0.5f, grid[i, j].position.z), Color.yellow, 30.0f);
-                //}
-                //else
-                //{
-                //    Debug.DrawLine(new Vector3(grid[i, j].position.x, grid[i, j].position.y, grid[i, j].position.z), new Vector3(grid[i, j].position.x, grid[i, j].position.y + 4.0f, grid[i, j].position.z), Color.red, 30.0f);
-                //}
+                if (grid[i, j].isObstacle == false)
+                {
+                    Debug.DrawLine(new Vector3(grid[i, j].position.x, grid[i, j].position.y, grid[i, j].position.z), new Vector3(grid[i, j].position.x, grid[i, j].position.y + 0.5f, grid[i, j].position.z), Color.yellow, 30.0f);
+                }
+                else
+                {
+                    Debug.DrawLine(new Vector3(grid[i, j].position.x, grid[i, j].position.y, grid[i, j].position.z), new Vector3(grid[i, j].position.x, grid[i, j].position.y + 4.0f, grid[i, j].position.z), Color.red, 30.0f);
+                }
             }
         }
     }
@@ -93,7 +93,7 @@ public class MapScanner : MonoBehaviour
         bool isWalkable = true;
         if (x - 1 >= 0 && y - 1 >= 0)
         {
-            if(Mathf.Abs(grid[x,y].position.y - grid[x-1, y - 1].position.y) > heightTolerance)
+            if(Mathf.Abs(grid[x, y].position.y - grid[x - 1, y - 1].position.y) > heightTolerance)
             {
                 isWalkable = false;
             }
