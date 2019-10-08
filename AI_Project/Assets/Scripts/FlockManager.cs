@@ -9,6 +9,8 @@ public class FlockManager : MonoBehaviour
     public GameObject[] allBirds;
     public Vector3 limit = new Vector3(5, 3, 5);
 
+    public Vector3 goalPosition;
+
     [Header("Bird Settings")]
     [Range(0.0f, 5.0f)]
     public float minSpeed;
@@ -32,11 +34,20 @@ public class FlockManager : MonoBehaviour
             allBirds[i] = (GameObject)Instantiate(birdPrefab, pos, Quaternion.identity);
             allBirds[i].GetComponent<Flock>().myManager = this;
         }
+
+        goalPosition = this.transform.position;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        //Randomizes the Goal
+        //if(Random.Range(0,100) < 10)
+        //{
+            //goalPosition = this.transform.position + new Vector3(Random.Range(-limit.x, limit.x),
+              //                                                    Random.Range(-limit.y, limit.y),
+              //                                                    Random.Range(-limit.z, limit.z));
+        //}
     }
 }

@@ -4814,7 +4814,8 @@ MonoBehaviour:
     type: 3}
   numBird: 20
   allBirds: []
-  limit: {x: 5, y: 5, z: 5}
+  limit: {x: 14, y: 3, z: 5}
+  goalPosition: {x: 0, y: 0, z: 0}
   minSpeed: 1.08
   maxSpeed: 3.13
   neighbor: 4.49
