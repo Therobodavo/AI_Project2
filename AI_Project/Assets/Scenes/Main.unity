@@ -2484,10 +2484,18 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Press "F" to set random location as AStar AI''s target
+  m_Text: 'For A*:
 
+    Press "F" to set random location as AStar AI''s target
 
     Click Right Mouse Button to order AStar AI to move to a location
+
+
+    For Flocking:
+
+    Press "G" to Change the general flock direction
+
+    Press "T" to increase the number of agents
 
 
     Press "ESC" to exit'
@@ -2914,6 +2922,80 @@ Transform:
   m_Father: {fileID: 1798013781}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &682673423
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2686966425418838765, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: m_Name
+      value: FlockManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686966425418838767, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 23.42
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686966425418838767, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 10.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686966425418838767, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 22.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686966425418838767, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686966425418838767, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686966425418838767, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686966425418838767, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686966425418838767, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686966425418838767, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686966425418838767, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686966425418838767, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2686966425418838766, guid: 76e77a13be2badb43825face77ec135a,
+        type: 3}
+      propertyPath: increaseAgents
+      value: 116
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 76e77a13be2badb43825face77ec135a, type: 3}
 --- !u!1 &718319304
 GameObject:
   m_ObjectHideFlags: 0
