@@ -2498,7 +2498,7 @@ MonoBehaviour:
     Press "T" to increase the number of agents
 
 
-    Press "ESC" to exit'
+    Press "H" to exit'
 --- !u!222 &445279864
 CanvasRenderer:
   m_ObjectHideFlags: 0
